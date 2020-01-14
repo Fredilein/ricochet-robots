@@ -1,18 +1,38 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h1>Ricochet Robots</h1>
+    <p>Web version of the board game.</p>
+    <ul class="list-group">
+      <li v-for="game in games" v-bind:key="game._id" class="list-group-item">
+        {{ game.name }}
+      </li>
+    </ul>
+    {{ error }}
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue';
+import axios from 'axios';
+
+const API_URL = 'http://localhost:4001/games';
 
 export default {
   name: 'home',
-  components: {
-    HelloWorld,
+  data() {
+    return {
+      games: [],
+      error: '',
+    };
+  },
+  mounted() {
+    axios.get(API_URL)
+      .then((res) => {
+        this.games = res.data;
+      })
+      .catch((err) => {
+        this.error = err;
+      });
   },
 };
 </script>
