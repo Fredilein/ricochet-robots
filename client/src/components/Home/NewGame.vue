@@ -4,10 +4,10 @@
       <label for="name">Game Name</label>
       <input class="form-control" id="name" type="text" v-model="name" />
       <br />
-      <label for="players">Player Names</label>
+      <label for="playerInput">Player Names</label>
       <input
         class="form-control"
-        id="players"
+        id="playerInput"
         type="text"
         v-for="(player, index) in players"
         v-model="players[index]"
@@ -40,7 +40,7 @@ export default {
   methods: {
     addPlayer(e) {
       e.preventDefault();
-      this.players.push(`Player ${this.playerNames.length + 1}`);
+      this.players.push(`Player ${this.players.length + 1}`);
     },
     createGame(e) {
       e.preventDefault();
