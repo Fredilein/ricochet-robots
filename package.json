@@ -5,7 +5,7 @@
   "author": "Fredilein",
   "license": "MIT",
   "scripts": {
-    "start:server": "nodemon index.js",
+    "start:server": "nodemon server/index.js",
     "start:client": "vue-cli-service serve client/src/main.js",
     "lint": "eslint --ext .js,.vue client/src",
     "lint-autofix": "eslint --ext .js,.vue client/src --fix"
@@ -44,7 +44,8 @@
     ],
     "rules": {
       "no-console": 0,
-      "no-alert": 0
+      "no-alert": 0,
+      "no-param-reassign": 0
     },
     "parserOptions": {
       "parser": "babel-eslint"
