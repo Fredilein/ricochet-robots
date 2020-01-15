@@ -9,9 +9,7 @@
     </ul>
     {{ error }}
 
-    <h2>new game</h2>
     <newGame />
-    <p>above</p>
 
   </div>
 </template>

@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div class="new-game">
+    <h2>New Game</h2>
     <div class="form-group">
       <label for="name">Game Name</label>
       <input class="form-control" id="name" type="text" v-model="name" />
@@ -65,3 +66,10 @@ export default {
   },
 };
 </script>
+
+<style lang="stylus">
+
+.new-game
+  margin-top 100px
+
+</style>
