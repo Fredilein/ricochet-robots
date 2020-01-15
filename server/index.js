@@ -2,41 +2,59 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const fs = require('fs');
+const hapi = require('hapi');
 
+const io = require('socket.io');
 const games = require('./db/games');
 
-const app = express();
-
-app.use(morgan('tiny'));
-app.use(cors());
-app.use(bodyParser.json());
-
-app.get('/', (req, res) => {
-  res.json({
-    message: 'Behold The MEVN Stack!',
-  });
+const server = hapi.server({
+  port: 4001,
+  host: 'localhost',
+  routes: { cors: true },
 });
 
-app.get('/games', (req, res) => {
-  games.getAll().then((g) => {
-    res.json(g);
-  });
-});
+const init = async () => {
+  server.route([
+    {
+      method: 'GET',
+      path: '/',
+      handler: (req, res) => 'Hello',
+    },
+    {
+      method: 'GET',
+      path: '/games',
+      handler: (req, res) => games.getAll(),
+    },
+    {
+      method: 'POST',
+      path: '/games',
+      handler: (req, res) => {
+        const game = req.payload;
+        console.log(game);
+        return games.create(game);
+      },
+    },
+  ]);
 
-app.post('/games', (req, res) => {
-  console.log(req.body);
-  games
-    .create(req.body)
-    .then((g) => {
-      res.json(g);
-    })
-    .catch((error) => {
-      res.status(500);
-      res.json(error);
+  await server.start();
+  console.log(`Server running at: ${server.info.uri}`);
+};
+
+init();
+
+const ios = io(server.listener);
+
+ios.on('connection', (socket) => {
+  console.log(`a user connected with id ${socket.id}`);
+
+  socket.on('INIT', (data) => {
+    const gid = data.gameId;
+    socket.join(gid);
+    fs.readFile('./assets/board.json', (_, json) => {
+      ios.to(gid).emit('BOARD_UPDATE', {
+        board: json,
+      });
     });
-});
-
-const port = process.env.PORT || 4001;
-app.listen(port, () => {
-  console.log(`listening on ${port}`);
+  });
 });

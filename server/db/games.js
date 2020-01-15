@@ -12,6 +12,10 @@ function getAll() {
   return games.find();
 }
 
+function getById(id) {
+  return games.findOne({ _id: id });
+}
+
 function create(game) {
   if (!game.name) game.name = 'New Game';
 
