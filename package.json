@@ -6,7 +6,9 @@
   "license": "MIT",
   "scripts": {
     "start:server": "nodemon index.js",
-    "start:client": "vue-cli-service serve client/src/main.js"
+    "start:client": "vue-cli-service serve client/src/main.js",
+    "lint": "eslint --ext .js,.vue client/src",
+    "lint-autofix": "eslint --ext .js,.vue client/src --fix"
   },
   "dependencies": {
     "axios": "^0.19.1",
@@ -24,7 +26,7 @@
     "@vue/cli-service": "^4.1.0",
     "@vue/eslint-config-airbnb": "^4.0.0",
     "babel-eslint": "^10.0.3",
-    "eslint": "^5.16.0",
+    "eslint": "^6.8.0",
     "eslint-plugin-vue": "^5.0.0",
     "lint-staged": "^9.5.0",
     "nodemon": "^2.0.2",
@@ -40,7 +42,10 @@
       "plugin:vue/essential",
       "@vue/airbnb"
     ],
-    "rules": {},
+    "rules": {
+      "no-console": 0,
+      "no-alert": 0
+    },
     "parserOptions": {
       "parser": "babel-eslint"
     }
