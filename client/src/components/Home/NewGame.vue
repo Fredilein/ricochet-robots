@@ -68,8 +68,6 @@ export default {
 </script>
 
 <style lang="stylus">
-
 .new-game
   margin-top 100px
-
 </style>
