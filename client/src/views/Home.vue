@@ -8,17 +8,26 @@
       </li>
     </ul>
     {{ error }}
+
+    <h2>new game</h2>
+    <newGame />
+    <p>above</p>
+
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import axios from 'axios';
+import newGame from '../components/Home/NewGame.vue';
 
 const API_URL = 'http://localhost:4001/games';
 
 export default {
   name: 'home',
+  components: {
+    newGame,
+  },
   data() {
     return {
       games: [],
