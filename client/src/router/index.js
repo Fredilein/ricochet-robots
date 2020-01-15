@@ -20,6 +20,13 @@ const routes = [
       return import(/* webpackChunkName: "about" */ '../views/About.vue');
     },
   },
+  {
+    path: '/game/:gameId',
+    name: 'game',
+    component() {
+      return import(/* webpackChunkName: "about" */ '../views/Game.vue');
+    },
+  },
 ];
 
 const router = new VueRouter({
