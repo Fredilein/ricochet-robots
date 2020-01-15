@@ -1,46 +1,52 @@
 {
-  "board": [
-    [
-      {
-        "walls": [0, 3],
-        "goal": null
-      },
-      {
-        "walls": [0, 2],
-        "goal": null
-      },
-      {
-        "walls": [0, 1],
-        "goal": null
-      }
-    ],
-    [
-      {
-        "walls": [1, 3],
-        "goal": null
-      },
-      {
-        "walls": [0, 3],
-        "goal": 1
-      },
-      {
-        "walls": [1],
-        "goal": null
-      }
-    ],
-    [
-      {
-        "walls": [2, 3],
-        "goal": null
-      },
-      {
-        "walls": [2],
-        "goal": null
-      },
-      {
-        "walls": [1, 2],
-        "goal": null
-      }
-    ]
+  "rows": [
+    {
+      "tiles": [
+        {
+          "walls": [0, 3],
+          "goal": null
+        },
+        {
+          "walls": [0, 2],
+          "goal": null
+        },
+        {
+          "walls": [0, 1],
+          "goal": null
+        }
+      ]
+    },
+    {
+      "tiles": [
+        {
+          "walls": [1, 3],
+          "goal": null
+        },
+        {
+          "walls": [0, 3],
+          "goal": 1
+        },
+        {
+          "walls": [1],
+          "goal": null
+        }
+      ]
+    },
+    {
+      "tiles": [
+        {
+          "walls": [2, 3],
+          "goal": null
+        },
+        {
+          "walls": [2],
+          "goal": null
+        },
+        {
+          "walls": [1, 2],
+          "goal": null
+        }
+      ]
+    }
   ]
 }

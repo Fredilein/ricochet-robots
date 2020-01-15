@@ -8,6 +8,8 @@ const hapi = require('hapi');
 const io = require('socket.io');
 const games = require('./db/games');
 
+const board = require('./assets/board.json');
+
 const server = hapi.server({
   port: 4001,
   host: 'localhost',
@@ -51,10 +53,8 @@ ios.on('connection', (socket) => {
   socket.on('INIT', (data) => {
     const gid = data.gameId;
     socket.join(gid);
-    fs.readFile('./assets/board.json', (_, json) => {
-      ios.to(gid).emit('BOARD_UPDATE', {
-        board: json,
-      });
+    ios.to(gid).emit('BOARD_UPDATE', {
+      board,
     });
   });
 });

@@ -1,17 +1,21 @@
 <template>
-  <div class="about">
+  <div class="container game">
     <h1>Game</h1>
     {{ this.$route.params.gameId }}
     <h2>Board</h2>
-    {{ board }}
+    <board v-bind:board="board" />
   </div>
 </template>
 
 <script>
 import socket from 'socket.io-client';
+import board from '../components/Game/Board.vue';
 
 export default {
   name: 'game',
+  components: {
+    board,
+  },
   data() {
     return {
       board: {},
@@ -29,3 +33,8 @@ export default {
   },
 };
 </script>
+
+<style lang="stylus">
+.game
+  margin-bottom 40px
+</style>
