@@ -3,9 +3,7 @@
     <h1>Game</h1>
     {{ this.$route.params.gameId }}
     <h2>Board</h2>
-    <board v-bind:board="board" />
-    <h2>Robots</h2>
-    {{ robots }}
+    <board v-bind:board="board" v-bind:robots="robots" />
   </div>
 </template>
 

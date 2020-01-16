@@ -3,6 +3,7 @@
     <div v-if="tile.goal">
       <div class="goal" v-bind:style="{ color: tile.goal.color }">{{ tile.goal.index }}</div>
     </div>
+    <h3>{{ robot }}</h3>
   </div>
 </template>
 
@@ -13,6 +14,7 @@ export default {
   name: 'tile',
   props: {
     tile: Object,
+    robot: String,
   },
   data() {
     return {
