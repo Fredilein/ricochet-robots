@@ -4,6 +4,7 @@
       <tr v-for="(row, i) in board.rows" v-bind:key="i">
         <td v-for="(tile, j) in row.tiles" v-bind:key="j">
           <tile v-bind:tile="tile" v-bind:robot="robots | checkRobot(i, j)" />
+          <!-- <tile v-bind:tile="tile" :robot="a" /> -->
         </td>
       </tr>
     </table>

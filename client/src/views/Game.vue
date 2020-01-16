@@ -32,6 +32,7 @@ export default {
       this.board = data.board;
     });
     this.socket.on('ROBOTS_UPDATE', (data) => {
+      console.log('received update');
       this.robots = data.robots;
     });
   },

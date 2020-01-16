@@ -6,6 +6,8 @@ const games = require('./db/games');
 
 const board = require('./assets/board.json');
 
+const redis = require('./redis.js');
+
 const server = hapi.server({
   port: 4001,
   host: 'localhost',
@@ -54,10 +56,11 @@ ios.on('connection', (socket) => {
       board,
     });
 
-    games.getRobots(gid).then((r) => {
-      ios.to(gid).emit('ROBOTS_UPDATE', {
-        robots: r.robots,
-      });
-    });
+    redis.getRobots(gid, ios);
+    // redis.getRobots(gid).then((r) => {
+    //   ios.to(gid).emit('ROBOTS_UPDATE', {
+    //     robots: r.robots,
+    //   });
+    // });
   });
 });
