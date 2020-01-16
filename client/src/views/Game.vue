@@ -4,6 +4,8 @@
     {{ this.$route.params.gameId }}
     <h2>Board</h2>
     <board v-bind:board="board" />
+    <h2>Robots</h2>
+    {{ robots }}
   </div>
 </template>
 
@@ -19,6 +21,7 @@ export default {
   data() {
     return {
       board: {},
+      robots: {},
       socket: socket('localhost:4001'),
       error: '',
     };
@@ -29,6 +32,9 @@ export default {
     });
     this.socket.on('BOARD_UPDATE', (data) => {
       this.board = data.board;
+    });
+    this.socket.on('ROBOTS_UPDATE', (data) => {
+      this.robots = data.robots;
     });
   },
 };

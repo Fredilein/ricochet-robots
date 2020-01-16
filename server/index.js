@@ -53,5 +53,11 @@ ios.on('connection', (socket) => {
     ios.to(gid).emit('BOARD_UPDATE', {
       board,
     });
+
+    games.getRobots(gid).then((r) => {
+      ios.to(gid).emit('ROBOTS_UPDATE', {
+        robots: r.robots,
+      });
+    });
   });
 });

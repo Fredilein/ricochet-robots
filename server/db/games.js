@@ -25,8 +25,8 @@ function create(game) {
 
   // Insert robots at startposition
   game.robots = {
-    blue: [2, 2],
     red: [0, 0],
+    blue: [2, 2],
   };
 
   const result = Joi.validate(game, schema);
@@ -41,4 +41,5 @@ function create(game) {
 module.exports = {
   create,
   getAll,
+  getRobots,
 };
