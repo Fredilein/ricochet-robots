@@ -1,8 +1,4 @@
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
 const morgan = require('morgan');
-const fs = require('fs');
 const hapi = require('hapi');
 
 const io = require('socket.io');
@@ -53,6 +49,7 @@ ios.on('connection', (socket) => {
   socket.on('INIT', (data) => {
     const gid = data.gameId;
     socket.join(gid);
+
     ios.to(gid).emit('BOARD_UPDATE', {
       board,
     });
