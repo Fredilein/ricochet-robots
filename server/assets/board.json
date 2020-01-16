@@ -24,7 +24,10 @@
         },
         {
           "walls": [0, 3],
-          "goal": 1
+          "goal": {
+            "color": "blue",
+            "index": 1
+          }
         },
         {
           "walls": [1],
