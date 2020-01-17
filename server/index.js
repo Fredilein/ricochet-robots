@@ -68,6 +68,10 @@ ios.on('connection', (socket) => {
     redis.newGuess(data.gameId, data.playerName, data.guess, ios);
   });
 
+  socket.on('nextphasepls', (data) => {
+    redis.nextPhase(data.gameId, ios);
+  });
+
   socket.on('disconnect', () => {
     console.log(`Socket ${socket.id} disconnected.`);
   });

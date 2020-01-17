@@ -11,6 +11,10 @@
 
     <h2>Scoreboard</h2>
     <scoreboard v-bind:players="players" />
+
+    <button class="btn btn-primary" v-on:click="nextPhase()">
+      Next Phase
+    </button>
   </div>
 </template>
 
@@ -45,6 +49,11 @@ export default {
         gameId: this.$route.params.gameId,
         playerName: store.getPlayerName(),
         guess: num,
+      });
+    },
+    nextPhase() {
+      this.socket.emit('nextphasepls', {
+        gameId: this.$route.params.gameId,
       });
     },
   },

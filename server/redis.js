@@ -76,6 +76,30 @@ function getPhase(gid, ios) {
   });
 }
 
+function nextPhase(gid, ios) {
+  const key = `game:${gid}:phase`;
+  client.get(key, (_0, getRes) => {
+    let nextPhaseName = '';
+    switch (getRes) {
+      case 'guess':
+        nextPhaseName = 'timer';
+        break;
+      case 'timer':
+        nextPhaseName = 'proof';
+        break;
+      case 'proof':
+        nextPhaseName = 'guess';
+        break;
+      default:
+        process.exit(1);
+    }
+    client.set(key, nextPhaseName);
+    ios.to(gid).emit('PHASE_UPDATE', {
+      phase: nextPhaseName,
+    });
+  });
+}
+
 function newGuess(gid, name, guess, ios) {
   const key = `game:${gid}:guesses`;
   client.zadd(key, guess, name, (_0, _1) => {
@@ -102,4 +126,5 @@ module.exports = {
   getPhase,
   newGuess,
   getGuesses,
+  nextPhase,
 };
