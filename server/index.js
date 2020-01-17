@@ -50,6 +50,8 @@ ios.on('connection', (socket) => {
 
   socket.on('INIT', (data) => {
     const gid = data.gameId;
+    const { playerName } = data;
+
     socket.join(gid);
 
     ios.to(gid).emit('BOARD_UPDATE', {
@@ -57,6 +59,7 @@ ios.on('connection', (socket) => {
     });
 
     redis.getRobots(gid, ios);
+    redis.joinPlayer(gid, playerName, ios);
   });
 
   socket.on('disconnect', () => {
