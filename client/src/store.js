@@ -13,7 +13,9 @@ const store = {
     return this.state.playerName;
   },
   setPlayerName(name) {
-    this.state.playerName = name;
+    if (name) {
+      this.state.playerName = name;
+    }
   },
 };
 

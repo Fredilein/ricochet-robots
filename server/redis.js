@@ -6,10 +6,10 @@ const defaultRobots = {
   red: [0, 0],
   blue: [2, 2],
 };
-
 const defaultPlayer = {
   score: 0,
 };
+const defaultPhase = 'guess';
 
 client.on('error', (err) => {
   console.log(`Error ${err}`);
@@ -21,9 +21,9 @@ client.on('connect', () => {
 
 function getRobots(gid, ios) {
   const key = `game:${gid}:robots`;
-  client.exists(key, (existsErr, existsRes) => {
+  client.exists(key, (_0, existsRes) => {
     if (existsRes) {
-      client.get(key, (getErr, getRes) => {
+      client.get(key, (_1, getRes) => {
         ios.to(gid).emit('ROBOTS_UPDATE', {
           robots: JSON.parse(getRes),
         });
@@ -37,18 +37,18 @@ function getRobots(gid, ios) {
   });
 }
 
-function joinPlayer(gid, playerName, ios) {
+function joinPlayer(gid, name, ios) {
   const key = `game:${gid}:players`;
-  client.hkeys(key, (fieldsErr, fieldsRes) => {
-    if (fieldsRes.includes(playerName)) {
-      client.hgetall(key, (allErr, allRes) => {
+  client.hkeys(key, (_0, fieldsRes) => {
+    if (fieldsRes.includes(name)) {
+      client.hgetall(key, (_1, allRes) => {
         ios.to(gid).emit('SCORE_UPDATE', {
           players: allRes,
         });
       });
     } else {
-      client.hset(key, playerName, JSON.stringify(defaultPlayer), (setErr, setRes) => {
-        client.hgetall(key, (allErr, allRes) => {
+      client.hset(key, name, JSON.stringify(defaultPlayer), (_2, _3) => {
+        client.hgetall(key, (_4, allRes) => {
           ios.to(gid).emit('SCORE_UPDATE', {
             players: allRes,
           });
@@ -58,7 +58,48 @@ function joinPlayer(gid, playerName, ios) {
   });
 }
 
+function getPhase(gid, ios) {
+  const key = `game:${gid}:phase`;
+  client.exists(key, (_0, existsRes) => {
+    if (existsRes) {
+      client.get(key, (_1, getRes) => {
+        ios.to(gid).emit('PHASE_UPDATE', {
+          phase: getRes,
+        });
+      });
+    } else {
+      client.set(key, defaultPhase);
+      ios.to(gid).emit('PHASE_UPDATE', {
+        phase: defaultPhase,
+      });
+    }
+  });
+}
+
+function newGuess(gid, name, guess, ios) {
+  const key = `game:${gid}:guesses`;
+  client.zadd(key, guess, name, (_0, _1) => {
+    client.zrange(key, 0, -1, 'WITHSCORES', (_2, zrangeRes) => {
+      ios.to(gid).emit('GUESS_UPDATE', {
+        guesses: zrangeRes,
+      });
+    });
+  });
+}
+
+function getGuesses(gid, ios) {
+  const key = `game:${gid}:guesses`;
+  client.zrange(key, 0, -1, 'WITHSCORES', (_0, zrangeRes) => {
+    ios.to(gid).emit('GUESS_UPDATE', {
+      guesses: zrangeRes,
+    });
+  });
+}
+
 module.exports = {
   getRobots,
   joinPlayer,
+  getPhase,
+  newGuess,
+  getGuesses,
 };

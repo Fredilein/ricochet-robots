@@ -3,13 +3,15 @@
     <h2>Games</h2>
     <ul class="list-group">
       <li v-for="game in games" v-bind:key="game._id" class="list-group-item">
-        <router-link class="name" :to="{ name: 'game', params: { gameId: game._id } }">
+        <router-link
+          class="name"
+          :to="{ name: 'game', params: { gameId: game._id, gameName: game.name } }"
+        >
           {{ game.name }}
         </router-link>
       </li>
     </ul>
     {{ error }}
-
   </div>
 </template>
 

@@ -1,6 +1,11 @@
 <template>
   <div class="container game">
-    <h1>Game</h1>
+    <h1>{{ this.$route.params.gameName }}</h1>
+    <p>Phase: {{ phase }}</p>
+
+    <h2>Guess</h2>
+    <guess v-bind:guesses="guesses" v-on:guess="sendGuess($event)" />
+
     <h2>Board</h2>
     <board v-bind:board="board" v-bind:robots="robots" />
 
@@ -13,6 +18,7 @@
 import socket from 'socket.io-client';
 import board from '../components/Game/Board.vue';
 import scoreboard from '../components/Game/Scoreboard.vue';
+import guess from '../components/Game/Guess.vue';
 import store from '../store';
 
 export default {
@@ -20,15 +26,27 @@ export default {
   components: {
     board,
     scoreboard,
+    guess,
   },
   data() {
     return {
       board: {},
       robots: {},
       players: {},
+      guesses: {},
+      phase: '',
       socket: socket('localhost:4001'),
       error: '',
     };
+  },
+  methods: {
+    sendGuess(num) {
+      this.socket.emit('NEW_GUESS', {
+        gameId: this.$route.params.gameId,
+        playerName: store.getPlayerName(),
+        guess: num,
+      });
+    },
   },
   mounted() {
     this.socket.emit('INIT', {
@@ -44,6 +62,12 @@ export default {
     });
     this.socket.on('SCORE_UPDATE', (data) => {
       this.players = data.players;
+    });
+    this.socket.on('PHASE_UPDATE', (data) => {
+      this.phase = data.phase;
+    });
+    this.socket.on('GUESS_UPDATE', (data) => {
+      this.guesses = data.guesses;
     });
   },
 };

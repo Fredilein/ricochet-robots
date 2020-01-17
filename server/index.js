@@ -60,6 +60,12 @@ ios.on('connection', (socket) => {
 
     redis.getRobots(gid, ios);
     redis.joinPlayer(gid, playerName, ios);
+    redis.getPhase(gid, ios);
+    redis.getGuesses(gid, ios);
+  });
+
+  socket.on('NEW_GUESS', (data) => {
+    redis.newGuess(data.gameId, data.playerName, data.guess, ios);
   });
 
   socket.on('disconnect', () => {
