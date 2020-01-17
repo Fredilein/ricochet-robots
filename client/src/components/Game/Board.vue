@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h2>Games</h2>
     <table>
       <tr v-for="(row, i) in board.rows" v-bind:key="i">
         <td v-for="(tile, j) in row.tiles" v-bind:key="j">

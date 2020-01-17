@@ -1,5 +1,5 @@
 <template>
-  <div class="new-game">
+  <div>
     <h2>New Game</h2>
     <div class="form-group">
       <label for="name">Game Name</label>
@@ -68,6 +68,4 @@ export default {
 </script>
 
 <style lang="stylus">
-.new-game
-  margin-top 100px
 </style>

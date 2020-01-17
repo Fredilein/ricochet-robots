@@ -57,10 +57,9 @@ ios.on('connection', (socket) => {
     });
 
     redis.getRobots(gid, ios);
-    // redis.getRobots(gid).then((r) => {
-    //   ios.to(gid).emit('ROBOTS_UPDATE', {
-    //     robots: r.robots,
-    //   });
-    // });
+  });
+
+  socket.on('disconnect', () => {
+    console.log(`Socket ${socket.id} disconnected.`);
   });
 });
