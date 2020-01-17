@@ -8,6 +8,16 @@ function moveRobots(robots, move) {
   return robotsNew;
 }
 
+function convertGuesses(arr) {
+  const obj = {};
+  let i;
+  for (i = 0; i < arr.length; i += 2) {
+    obj[arr[i]] = arr[i + 1];
+  }
+  return obj;
+}
+
 module.exports = {
   moveRobots,
+  convertGuesses,
 };

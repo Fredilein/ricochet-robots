@@ -122,9 +122,9 @@ function newGuess(gid, name, guess, ios) {
   client.get(keyPhase, (_0, getRes) => {
     if (getRes === 'proof') return;
     client.zadd(key, guess, name, (_1, _2) => {
-      client.zrange(key, 0, -1, 'WITHSCORES', (_3, zrangeRes) => {
+      client.zrange(key, 0, -1, 'WITHSCORES', (_3, guesses) => {
         ios.to(gid).emit('GUESS_UPDATE', {
-          guesses: zrangeRes,
+          guesses: lib.convertGuesses(guesses),
         });
       });
     });
@@ -133,9 +133,9 @@ function newGuess(gid, name, guess, ios) {
 
 function getGuesses(gid, ios) {
   const key = `game:${gid}:guesses`;
-  client.zrange(key, 0, -1, 'WITHSCORES', (_0, zrangeRes) => {
+  client.zrange(key, 0, -1, 'WITHSCORES', (_0, guesses) => {
     ios.to(gid).emit('GUESS_UPDATE', {
-      guesses: zrangeRes,
+      guesses: lib.convertGuesses(guesses),
     });
   });
 }
