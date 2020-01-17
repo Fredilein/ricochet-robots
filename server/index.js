@@ -7,6 +7,7 @@ const games = require('./db/games');
 const board = require('./assets/board.json');
 
 const redis = require('./redis.js');
+const lib = require('./lib');
 
 const server = hapi.server({
   port: 4001,
@@ -66,6 +67,10 @@ ios.on('connection', (socket) => {
 
   socket.on('NEW_GUESS', (data) => {
     redis.newGuess(data.gameId, data.playerName, data.guess, ios);
+  });
+
+  socket.on('NEW_MOVE', (data) => {
+    redis.setRobots(data.gameId, data.move, ios);
   });
 
   socket.on('nextphasepls', (data) => {

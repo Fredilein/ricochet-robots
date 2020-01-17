@@ -3,13 +3,19 @@
     <table>
       <tr v-for="(row, i) in board.rows" v-bind:key="i">
         <td v-for="(tile, j) in row.tiles" v-bind:key="j">
-          <tile v-bind:tile="tile" v-bind:robot="robots | checkRobot(i, j)" />
+          <tile
+            v-bind:tile="tile"
+            v-bind:robot="robots | checkRobot(i, j)"
+            v-on:click="click(i, j)"
+          />
         </td>
       </tr>
     </table>
 
     <h2>Robots board</h2>
     {{ robots }}
+    <h2>Moves</h2>
+    {{ clicks }}
   </div>
 </template>
 
@@ -21,6 +27,11 @@ export default {
   name: 'board',
   components: {
     tile,
+  },
+  data() {
+    return {
+      clicks: [],
+    };
   },
   props: {
     board: Object,
@@ -34,6 +45,15 @@ export default {
         if (r[key][0] === i && r[key][1] === j) color = key;
       });
       return color;
+    },
+  },
+  methods: {
+    click(i, j) {
+      this.clicks.push([i, j]);
+      if (this.clicks.length === 2) {
+        this.$emit('new-move', this.clicks);
+        this.clicks = [];
+      }
     },
   },
   mounted() {

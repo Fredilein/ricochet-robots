@@ -7,7 +7,7 @@
     <guess v-bind:guesses="guesses" v-on:guess="sendGuess($event)" />
 
     <h2>Board</h2>
-    <board v-bind:board="board" v-bind:robots="robots" />
+    <board v-bind:board="board" v-bind:robots="robots" v-on:new-move="sendMove($event)" />
 
     <h2>Scoreboard</h2>
     <scoreboard v-bind:players="players" />
@@ -54,6 +54,12 @@ export default {
     nextPhase() {
       this.socket.emit('nextphasepls', {
         gameId: this.$route.params.gameId,
+      });
+    },
+    sendMove(move) {
+      this.socket.emit('NEW_MOVE', {
+        gameId: this.$route.params.gameId,
+        move,
       });
     },
   },

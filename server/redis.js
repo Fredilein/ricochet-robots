@@ -1,4 +1,5 @@
 const redis = require('redis');
+const lib = require('./lib');
 
 const client = redis.createClient();
 
@@ -34,6 +35,21 @@ function getRobots(gid, ios) {
         robots: defaultRobots,
       });
     }
+  });
+}
+
+function setRobots(gid, move, ios) {
+  const key = `game:${gid}:robots`;
+  const keyPhase = `game:${gid}:phase`;
+  client.get(keyPhase, (_0, getRes) => {
+    if (getRes !== 'proof') return;
+    client.get(key, (_1, robots) => {
+      const robotsNew = lib.moveRobots(robots, move);
+      client.set(key, JSON.stringify(robotsNew));
+      ios.to(gid).emit('ROBOTS_UPDATE', {
+        robots: robotsNew,
+      });
+    });
   });
 }
 
@@ -102,10 +118,14 @@ function nextPhase(gid, ios) {
 
 function newGuess(gid, name, guess, ios) {
   const key = `game:${gid}:guesses`;
-  client.zadd(key, guess, name, (_0, _1) => {
-    client.zrange(key, 0, -1, 'WITHSCORES', (_2, zrangeRes) => {
-      ios.to(gid).emit('GUESS_UPDATE', {
-        guesses: zrangeRes,
+  const keyPhase = `game:${gid}:phase`;
+  client.get(keyPhase, (_0, getRes) => {
+    if (getRes === 'proof') return;
+    client.zadd(key, guess, name, (_1, _2) => {
+      client.zrange(key, 0, -1, 'WITHSCORES', (_3, zrangeRes) => {
+        ios.to(gid).emit('GUESS_UPDATE', {
+          guesses: zrangeRes,
+        });
       });
     });
   });
@@ -127,4 +147,5 @@ module.exports = {
   newGuess,
   getGuesses,
   nextPhase,
+  setRobots,
 };

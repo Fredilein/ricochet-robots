@@ -1,5 +1,5 @@
 <template>
-  <div class="tile" v-bind:style="styledTile">
+  <div class="tile" v-bind:style="styledTile" v-on:click="$emit('click')">
     <div v-if="tile.goal">
       <div class="goal" v-bind:style="{ color: tile.goal.color }">{{ tile.goal.index }}</div>
     </div>
