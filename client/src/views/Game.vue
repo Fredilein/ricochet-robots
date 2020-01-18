@@ -83,9 +83,11 @@ export default {
       });
     },
     passTurn() {
-      this.socket.emit('PASS_TURN', {
-        gameId: this.$route.params.gameId,
-      });
+      if (this.phase === 'proof') {
+        this.socket.emit('PASS_TURN', {
+          gameId: this.$route.params.gameId,
+        });
+      }
     },
   },
   mounted() {

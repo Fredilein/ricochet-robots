@@ -37,11 +37,17 @@ function parseGoals() {
   return goals;
 }
 
-
 function randomGoal() {
   const goals = parseGoals();
   const goal = goals[Math.floor(Math.random() * goals.length)];
   return goal;
+}
+
+function checkGoal(robots, goal) {
+  if (JSON.stringify(robots[goal.color]) === JSON.stringify(goal.coords)) {
+    return true;
+  }
+  return false;
 }
 
 module.exports = {
@@ -49,4 +55,5 @@ module.exports = {
   convertGuesses,
   parseGoals,
   randomGoal,
+  checkGoal,
 };

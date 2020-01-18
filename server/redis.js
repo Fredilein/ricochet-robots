@@ -78,6 +78,7 @@ function getRobots(gid, ios) {
 function setRobots(gid, move, ios) {
   const key = `game:${gid}:robots`;
   const keyPhase = `game:${gid}:phase`;
+  const keyGoal = `game:${gid}:goal`;
   client.get(keyPhase, (_0, getRes) => {
     if (getRes !== 'proof') return;
     client.get(key, (_1, robots) => {
@@ -86,6 +87,11 @@ function setRobots(gid, move, ios) {
       client.set(key, JSON.stringify(robotsNew));
       ios.to(gid).emit('ROBOTS_UPDATE', {
         robots: robotsNew,
+      });
+      client.get(keyGoal, (_2, goal) => {
+        if (lib.checkGoal(robotsNew, JSON.parse(goal))) {
+          console.log('GOAL!');
+        }
       });
     });
   });
