@@ -52,7 +52,9 @@
       "no-alert": 0,
       "no-param-reassign": 0,
       "no-unused-vars": 0,
-      "prefer-destructuring": 0
+      "prefer-destructuring": 0,
+      "no-use-before-define": 0,
+      "no-case-declarations": 0
     },
     "parserOptions": {
       "parser": "babel-eslint"

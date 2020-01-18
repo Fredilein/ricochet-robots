@@ -1,4 +1,5 @@
 const _ = require('underscore');
+const redis = require('./redis');
 const board = require('./assets/board.json');
 
 function moveRobots(robots, move) {
@@ -33,12 +34,19 @@ function parseGoals() {
       }
     }
   }
-  console.log(`goals: ${JSON.stringify(goals)}`);
   return goals;
+}
+
+
+function randomGoal() {
+  const goals = parseGoals();
+  const goal = goals[Math.floor(Math.random() * goals.length)];
+  return goal;
 }
 
 module.exports = {
   moveRobots,
   convertGuesses,
   parseGoals,
+  randomGoal,
 };

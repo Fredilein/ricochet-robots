@@ -20,6 +20,43 @@ client.on('connect', () => {
   console.log('Connected to redis');
 });
 
+function initGame(gid, ios) {
+  console.log('init game');
+  const key = `game:${gid}:phase`;
+  client.set(key, defaultPhase);
+  setGoal(gid, lib.randomGoal(), ios);
+  ios.to(gid).emit('PHASE_UPDATE', {
+    phase: defaultPhase,
+  });
+}
+
+function initPhase(gid, phase, ios) {
+  switch (phase) {
+    case 'guess':
+      console.log('init phase guess');
+      removeGuesses(gid, ios);
+      removeTurn(gid, ios);
+      const goal = lib.randomGoal();
+      setGoal(gid, goal, ios);
+      break;
+    case 'timer':
+      console.log('init phase timer');
+      break;
+    case 'proof':
+      console.log('init phase proof');
+      const keyRobots = `game:${gid}:robots`;
+      const keyBackup = `game:${gid}:robots:backup`;
+      client.get(keyRobots, (_0, robots) => {
+        client.set(keyBackup, robots, (_1, _2) => {
+          nextPlayerProof(gid, ios);
+        });
+      });
+      break;
+    default:
+      process.exit(1);
+  }
+}
+
 function getRobots(gid, ios) {
   const key = `game:${gid}:robots`;
   client.exists(key, (_0, existsRes) => {
@@ -85,18 +122,14 @@ function getPhase(gid, ios) {
         });
       });
     } else {
-      client.set(key, defaultPhase);
-      ios.to(gid).emit('PHASE_UPDATE', {
-        phase: defaultPhase,
-      });
+      initGame(gid, ios);
     }
   });
 }
 
 function nextPhase(gid, ios) {
-  const keyPhase = `game:${gid}:phase`;
-  const keyGuesses = `game:${gid}:guesses`;
-  client.get(keyPhase, (_0, getRes) => {
+  const key = `game:${gid}:phase`;
+  client.get(key, (_0, getRes) => {
     let nextPhaseName = '';
     switch (getRes) {
       case 'guess':
@@ -107,18 +140,15 @@ function nextPhase(gid, ios) {
         break;
       case 'proof':
         nextPhaseName = 'guess';
-        client.zremrangebyrank(keyGuesses, 0, -1);
-        ios.to(gid).emit('GUESS_UPDATE', {
-          guesses: {},
-        });
         break;
       default:
         process.exit(1);
     }
-    client.set(keyPhase, nextPhaseName);
     ios.to(gid).emit('PHASE_UPDATE', {
       phase: nextPhaseName,
     });
+    client.set(key, nextPhaseName);
+    initPhase(gid, nextPhaseName, ios);
   });
 }
 
@@ -140,16 +170,16 @@ function newGuess(gid, name, guess, ios) {
 function getGuesses(gid, ios) {
   const key = `game:${gid}:guesses`;
   client.zrange(key, 0, -1, 'WITHSCORES', (_0, guesses) => {
+    const g = guesses ? lib.convertGuesses(guesses) : [];
     ios.to(gid).emit('GUESS_UPDATE', {
-      guesses: lib.convertGuesses(guesses),
+      guesses: g,
     });
   });
 }
 
-function setGoal(gid, ios) {
+function setGoal(gid, goal, ios) {
   const key = `game:${gid}:goal`;
-  const goals = lib.parseGoals();
-  const goal = goals[Math.floor(Math.random() * goals.length)];
+  console.log(`goal${JSON.stringify(goal)}`);
   client.set(key, JSON.stringify(goal));
   ios.to(gid).emit('GOAL_UPDATE', {
     goal,
@@ -166,8 +196,60 @@ function getGoal(gid, ios) {
         });
       });
     } else {
-      setGoal(gid, ios);
+      initGame(gid, ios);
     }
+  });
+}
+
+function nextPlayerProof(gid, ios) {
+  const keyRobots = `game:${gid}:robots`;
+  const keyBackup = `game:${gid}:robots:backup`;
+  const keyTurn = `game:${gid}:turn`;
+  const keyGuesses = `game:${gid}:guesses`;
+  client.get(keyBackup, (_0, robots) => {
+    client.set(keyRobots, robots);
+    ios.to(gid).emit('ROBOTS_UPDATE', {
+      robots: JSON.parse(robots),
+    });
+  });
+  client.zpopmin(keyGuesses, (_1, guess) => {
+    if (guess.length > 0) {
+      client.set(keyTurn, JSON.stringify(guess));
+      ios.to(gid).emit('TURN_UPDATE', {
+        turn: guess,
+      });
+      getGuesses(gid, ios);
+    } else {
+      client.set(keyTurn, '');
+      ios.to(gid).emit('TURN_UPDATE', {
+        turn: [],
+      });
+      nextPhase(gid, ios);
+    }
+  });
+}
+
+function createBackup(gid, ios) {
+  const keyRobots = `game:${gid}:robots`;
+  const keyBackup = `game:${gid}:robots:backup`;
+  client.get(keyRobots, (_1, robots) => {
+    client.set(keyBackup, robots);
+  });
+}
+
+function removeGuesses(gid, ios) {
+  const key = `game:${gid}:guesses`;
+  client.zremrangebyrank(key, 0, -1);
+  ios.to(gid).emit('GUESS_UPDATE', {
+    guesses: {},
+  });
+}
+
+function removeTurn(gid, ios) {
+  const keyTurn = `game:${gid}:turn`;
+  client.set(keyTurn, '');
+  ios.to(gid).emit('TURN_UPDATE', {
+    turn: [],
   });
 }
 
@@ -181,4 +263,8 @@ module.exports = {
   setRobots,
   setGoal,
   getGoal,
+  nextPlayerProof,
+  createBackup,
+  removeGuesses,
+  removeTurn,
 };

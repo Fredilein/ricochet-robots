@@ -11,6 +11,13 @@
     <h2>Guess</h2>
     <guess v-bind:guesses="guesses" v-on:guess="sendGuess($event)" />
 
+    <h2>Turn</h2>
+    <p>{{ turn }}</p>
+    <button class="btn btn-primary" v-on:click="passTurn()">
+      Pass
+    </button>
+
+
     <h2>Board</h2>
     <board v-bind:board="board" v-bind:robots="robots" v-on:new-move="sendMove($event)" />
 
@@ -44,6 +51,7 @@ export default {
       players: {},
       guesses: {},
       phase: '',
+      turn: {},
       goal: {},
       socket: socket('localhost:4001'),
       error: '',
@@ -74,6 +82,11 @@ export default {
         move,
       });
     },
+    passTurn() {
+      this.socket.emit('PASS_TURN', {
+        gameId: this.$route.params.gameId,
+      });
+    },
   },
   mounted() {
     this.socket.emit('INIT', {
@@ -98,6 +111,9 @@ export default {
     });
     this.socket.on('GOAL_UPDATE', (data) => {
       this.goal = data.goal;
+    });
+    this.socket.on('TURN_UPDATE', (data) => {
+      this.turn = data.turn;
     });
   },
 };

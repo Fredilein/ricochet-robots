@@ -43,7 +43,10 @@
         },
         {
           "walls": [2],
-          "goal": null
+          "goal": {
+            "color": "red",
+            "index": 1
+          }
         },
         {
           "walls": [1, 2],

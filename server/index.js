@@ -74,6 +74,10 @@ ios.on('connection', (socket) => {
     redis.setRobots(data.gameId, data.move, ios);
   });
 
+  socket.on('PASS_TURN', (data) => {
+    redis.nextPlayerProof(data.gameId, ios);
+  });
+
   socket.on('nextphasepls', (data) => {
     redis.nextPhase(data.gameId, ios);
   });
