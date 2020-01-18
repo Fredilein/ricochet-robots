@@ -146,6 +146,31 @@ function getGuesses(gid, ios) {
   });
 }
 
+function setGoal(gid, ios) {
+  const key = `game:${gid}:goal`;
+  const goals = lib.parseGoals();
+  const goal = goals[Math.floor(Math.random() * goals.length)];
+  client.set(key, JSON.stringify(goal));
+  ios.to(gid).emit('GOAL_UPDATE', {
+    goal,
+  });
+}
+
+function getGoal(gid, ios) {
+  const key = `game:${gid}:goal`;
+  client.exists(key, (_0, exists) => {
+    if (exists) {
+      client.get(key, (_1, goal) => {
+        ios.to(gid).emit('GOAL_UPDATE', {
+          goal: JSON.parse(goal),
+        });
+      });
+    } else {
+      setGoal(gid, ios);
+    }
+  });
+}
+
 module.exports = {
   getRobots,
   joinPlayer,
@@ -154,4 +179,6 @@ module.exports = {
   getGuesses,
   nextPhase,
   setRobots,
+  setGoal,
+  getGoal,
 };

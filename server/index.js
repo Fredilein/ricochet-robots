@@ -63,6 +63,7 @@ ios.on('connection', (socket) => {
     redis.joinPlayer(gid, playerName, ios);
     redis.getPhase(gid, ios);
     redis.getGuesses(gid, ios);
+    redis.getGoal(gid, ios);
   });
 
   socket.on('NEW_GUESS', (data) => {

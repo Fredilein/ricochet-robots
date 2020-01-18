@@ -1,5 +1,5 @@
-const board = './assets/board.json';
 const _ = require('underscore');
+const board = require('./assets/board.json');
 
 function moveRobots(robots, move) {
   const inv = _.invert(robots);
@@ -14,13 +14,31 @@ function moveRobots(robots, move) {
 function convertGuesses(arr) {
   const obj = {};
   let i;
-  for (i = 0; i < arr.length; i += 2) {
+  for (i = 0; i < arr.length - 1; i += 2) {
     obj[arr[i]] = arr[i + 1];
   }
   return obj;
 }
 
+function parseGoals() {
+  const goals = [];
+  let r;
+  let t;
+  for (r = 0; r < board.rows.length; r += 1) {
+    for (t = 0; t < board.rows[r].tiles.length; t += 1) {
+      if (board.rows[r].tiles[t].goal !== null) {
+        const g = board.rows[r].tiles[t].goal;
+        g.coords = [r, t];
+        goals.push(g);
+      }
+    }
+  }
+  console.log(`goals: ${JSON.stringify(goals)}`);
+  return goals;
+}
+
 module.exports = {
   moveRobots,
   convertGuesses,
+  parseGoals,
 };

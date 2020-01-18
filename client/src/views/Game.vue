@@ -1,7 +1,12 @@
 <template>
   <div class="container game">
     <h1>{{ this.$route.params.gameName }}</h1>
+
+    <h2>Phase</h2>
     <p>Phase: {{ phase }}</p>
+
+    <h2>Goal</h2>
+    <p>{{ goal }}</p>
 
     <h2>Guess</h2>
     <guess v-bind:guesses="guesses" v-on:guess="sendGuess($event)" />
@@ -39,6 +44,7 @@ export default {
       players: {},
       guesses: {},
       phase: '',
+      goal: {},
       socket: socket('localhost:4001'),
       error: '',
     };
@@ -89,6 +95,9 @@ export default {
     });
     this.socket.on('GUESS_UPDATE', (data) => {
       this.guesses = data.guesses;
+    });
+    this.socket.on('GOAL_UPDATE', (data) => {
+      this.goal = data.goal;
     });
   },
 };
