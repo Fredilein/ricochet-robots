@@ -64,6 +64,8 @@ ios.on('connection', (socket) => {
     redis.getPhase(gid, ios);
     redis.getGuesses(gid, ios);
     redis.getGoal(gid, ios);
+    redis.getTurn(gid, ios);
+    redis.getCount(gid, ios);
   });
 
   socket.on('NEW_GUESS', (data) => {

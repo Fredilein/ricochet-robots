@@ -41,6 +41,9 @@ function initPhase(gid, phase, ios) {
       break;
     case 'timer':
       console.log('init phase timer');
+      setTimeout(() => {
+        nextPhase(gid, ios);
+      }, 3000);
       break;
     case 'proof':
       console.log('init phase proof');
@@ -291,6 +294,27 @@ function removeTurn(gid, ios) {
   });
 }
 
+function getTurn(gid, ios) {
+  const keyTurn = `game:${gid}:turn`;
+  client.get(keyTurn, (_3, turn) => {
+    if (!turn) return;
+    const turnJson = JSON.parse(turn);
+    ios.to(gid).emit('TURN_UPDATE', {
+      turn: turnJson,
+    });
+  });
+}
+
+function getCount(gid, ios) {
+  const keyCounter = `game:${gid}:counter`;
+  client.get(keyCounter, (_0, c) => {
+    if (!c) return;
+    ios.to(gid).emit('COUNT_UPDATE', {
+      count: c,
+    });
+  });
+}
+
 module.exports = {
   getRobots,
   joinPlayer,
@@ -305,4 +329,6 @@ module.exports = {
   createBackup,
   removeGuesses,
   removeTurn,
+  getTurn,
+  getCount,
 };

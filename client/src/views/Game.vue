@@ -18,7 +18,6 @@
     </button>
     <div v-if="turn && turn[1] > 0">Remaining: {{ turn[1] - count }}</div>
 
-
     <h2>Board</h2>
     <board v-bind:board="board" v-bind:robots="robots" v-on:new-move="sendMove($event)" />
 
@@ -79,6 +78,8 @@ export default {
       });
     },
     sendMove(move) {
+      console.log(`turn: ${this.turn}`);
+      console.log(`player: ${store.getPlayerName()}`);
       if (this.turn[0] && store.getPlayerName() === this.turn[0]) {
         this.socket.emit('NEW_MOVE', {
           gameId: this.$route.params.gameId,
