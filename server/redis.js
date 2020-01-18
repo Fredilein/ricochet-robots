@@ -46,11 +46,13 @@ function initPhase(gid, phase, ios) {
       console.log('init phase proof');
       const keyRobots = `game:${gid}:robots`;
       const keyBackup = `game:${gid}:robots:backup`;
+      const keyCounter = `game:${gid}:counter`;
       client.get(keyRobots, (_0, robots) => {
         client.set(keyBackup, robots, (_1, _2) => {
           nextPlayerProof(gid, ios);
         });
       });
+      client.set(keyCounter, 0);
       break;
     default:
       process.exit(1);
@@ -79,6 +81,8 @@ function setRobots(gid, move, ios) {
   const key = `game:${gid}:robots`;
   const keyPhase = `game:${gid}:phase`;
   const keyGoal = `game:${gid}:goal`;
+  const keyCounter = `game:${gid}:counter`;
+  const keyTurn = `game:${gid}:turn`;
   client.get(keyPhase, (_0, getRes) => {
     if (getRes !== 'proof') return;
     client.get(key, (_1, robots) => {
@@ -91,6 +95,23 @@ function setRobots(gid, move, ios) {
       client.get(keyGoal, (_2, goal) => {
         if (lib.checkGoal(robotsNew, JSON.parse(goal))) {
           console.log('GOAL!');
+          nextPhase(gid, ios);
+        } else {
+          client.incr(keyCounter, (_3, c) => {
+            client.get(keyTurn, (_4, turn) => {
+              const turnJson = JSON.parse(turn);
+              console.log(c);
+              console.log(turnJson);
+              if (c >= turnJson[1]) {
+                console.log('Too many moves');
+                nextPlayerProof(gid, ios);
+              } else {
+                ios.to(gid).emit('COUNT_UPDATE', {
+                  count: c,
+                });
+              }
+            });
+          });
         }
       });
     });
@@ -212,6 +233,7 @@ function nextPlayerProof(gid, ios) {
   const keyBackup = `game:${gid}:robots:backup`;
   const keyTurn = `game:${gid}:turn`;
   const keyGuesses = `game:${gid}:guesses`;
+  const keyCounter = `game:${gid}:counter`;
   client.get(keyBackup, (_0, robots) => {
     client.set(keyRobots, robots);
     ios.to(gid).emit('ROBOTS_UPDATE', {
@@ -221,8 +243,12 @@ function nextPlayerProof(gid, ios) {
   client.zpopmin(keyGuesses, (_1, guess) => {
     if (guess.length > 0) {
       client.set(keyTurn, JSON.stringify(guess));
+      client.set(keyCounter, 0);
       ios.to(gid).emit('TURN_UPDATE', {
         turn: guess,
+      });
+      ios.to(gid).emit('COUNT_UPDATE', {
+        count: 0,
       });
       getGuesses(gid, ios);
     } else {

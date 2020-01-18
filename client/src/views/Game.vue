@@ -16,6 +16,7 @@
     <button class="btn btn-primary" v-on:click="passTurn()">
       Pass
     </button>
+    <div v-if="turn && turn[1] > 0">Remaining: {{ turn[1] - count }}</div>
 
 
     <h2>Board</h2>
@@ -52,6 +53,7 @@ export default {
       guesses: {},
       phase: '',
       turn: {},
+      count: 0,
       goal: {},
       socket: socket('localhost:4001'),
       error: '',
@@ -77,10 +79,12 @@ export default {
       });
     },
     sendMove(move) {
-      this.socket.emit('NEW_MOVE', {
-        gameId: this.$route.params.gameId,
-        move,
-      });
+      if (this.turn[0] && store.getPlayerName() === this.turn[0]) {
+        this.socket.emit('NEW_MOVE', {
+          gameId: this.$route.params.gameId,
+          move,
+        });
+      }
     },
     passTurn() {
       if (this.phase === 'proof') {
@@ -116,6 +120,9 @@ export default {
     });
     this.socket.on('TURN_UPDATE', (data) => {
       this.turn = data.turn;
+    });
+    this.socket.on('COUNT_UPDATE', (data) => {
+      this.count = data.count;
     });
   },
 };
