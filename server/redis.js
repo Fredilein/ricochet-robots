@@ -83,6 +83,7 @@ function setRobots(gid, move, ios) {
   const keyGoal = `game:${gid}:goal`;
   const keyCounter = `game:${gid}:counter`;
   const keyTurn = `game:${gid}:turn`;
+  const keyScores = `game:${gid}:scores`;
   client.get(keyPhase, (_0, getRes) => {
     if (getRes !== 'proof') return;
     client.get(key, (_1, robots) => {
@@ -93,15 +94,20 @@ function setRobots(gid, move, ios) {
         robots: robotsNew,
       });
       client.get(keyGoal, (_2, goal) => {
-        if (lib.checkGoal(robotsNew, JSON.parse(goal))) {
-          console.log('GOAL!');
-          nextPhase(gid, ios);
-        } else {
-          client.incr(keyCounter, (_3, c) => {
-            client.get(keyTurn, (_4, turn) => {
-              const turnJson = JSON.parse(turn);
-              console.log(c);
-              console.log(turnJson);
+        client.get(keyTurn, (_3, turn) => {
+          const turnJson = JSON.parse(turn);
+          if (lib.checkGoal(robotsNew, JSON.parse(goal))) {
+            console.log('GOAL!');
+            client.hincrby(keyScores, turnJson[0], 1, (_4, _5) => {
+              client.hgetall(keyScores, (_6, allRes) => {
+                ios.to(gid).emit('SCORE_UPDATE', {
+                  players: allRes,
+                });
+              });
+              nextPhase(gid, ios);
+            });
+          } else {
+            client.incr(keyCounter, (_7, c) => {
               if (c >= turnJson[1]) {
                 console.log('Too many moves');
                 nextPlayerProof(gid, ios);
@@ -111,15 +117,15 @@ function setRobots(gid, move, ios) {
                 });
               }
             });
-          });
-        }
+          }
+        });
       });
     });
   });
 }
 
 function joinPlayer(gid, name, ios) {
-  const key = `game:${gid}:players`;
+  const key = `game:${gid}:scores`;
   client.hkeys(key, (_0, fieldsRes) => {
     if (fieldsRes.includes(name)) {
       client.hgetall(key, (_1, allRes) => {
@@ -128,7 +134,7 @@ function joinPlayer(gid, name, ios) {
         });
       });
     } else {
-      client.hset(key, name, JSON.stringify(defaultPlayer), (_2, _3) => {
+      client.hset(key, name, 0, (_2, _3) => {
         client.hgetall(key, (_4, allRes) => {
           ios.to(gid).emit('SCORE_UPDATE', {
             players: allRes,
