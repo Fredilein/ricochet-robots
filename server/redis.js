@@ -44,7 +44,8 @@ function setRobots(gid, move, ios) {
   client.get(keyPhase, (_0, getRes) => {
     if (getRes !== 'proof') return;
     client.get(key, (_1, robots) => {
-      const robotsNew = lib.moveRobots(robots, move);
+      const robotsNew = lib.moveRobots(JSON.parse(robots), move);
+      if (!robotsNew) return;
       client.set(key, JSON.stringify(robotsNew));
       ios.to(gid).emit('ROBOTS_UPDATE', {
         robots: robotsNew,

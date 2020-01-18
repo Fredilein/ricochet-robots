@@ -1,10 +1,13 @@
 const board = './assets/board.json';
+const _ = require('underscore');
 
 function moveRobots(robots, move) {
-  const robotsNew = {
-    red: [0, 0],
-    blue: [0, 2],
-  };
+  const inv = _.invert(robots);
+  const color = inv[move[0]];
+  if (!color) return false;
+
+  const robotsNew = robots;
+  robotsNew.color = move[1];
   return robotsNew;
 }
 
