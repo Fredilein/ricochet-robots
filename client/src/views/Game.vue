@@ -45,11 +45,17 @@ export default {
   },
   methods: {
     sendGuess(num) {
-      this.socket.emit('NEW_GUESS', {
-        gameId: this.$route.params.gameId,
-        playerName: store.getPlayerName(),
-        guess: num,
-      });
+      console.log(this.guesses);
+      console.log(store.getPlayerName());
+      const name = store.getPlayerName();
+      const prevGuess = this.guesses[name];
+      if (!prevGuess || prevGuess > num) {
+        this.socket.emit('NEW_GUESS', {
+          gameId: this.$route.params.gameId,
+          playerName: store.getPlayerName(),
+          guess: num,
+        });
+      }
     },
     nextPhase() {
       this.socket.emit('nextphasepls', {

@@ -7,7 +7,7 @@ function moveRobots(robots, move) {
   if (!color) return false;
 
   const robotsNew = robots;
-  robotsNew.color = move[1];
+  robotsNew[color] = move[1];
   return robotsNew;
 }
 

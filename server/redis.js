@@ -94,8 +94,9 @@ function getPhase(gid, ios) {
 }
 
 function nextPhase(gid, ios) {
-  const key = `game:${gid}:phase`;
-  client.get(key, (_0, getRes) => {
+  const keyPhase = `game:${gid}:phase`;
+  const keyGuesses = `game:${gid}:guesses`;
+  client.get(keyPhase, (_0, getRes) => {
     let nextPhaseName = '';
     switch (getRes) {
       case 'guess':
@@ -106,11 +107,15 @@ function nextPhase(gid, ios) {
         break;
       case 'proof':
         nextPhaseName = 'guess';
+        client.zremrangebyrank(keyGuesses, 0, -1);
+        ios.to(gid).emit('GUESS_UPDATE', {
+          guesses: {},
+        });
         break;
       default:
         process.exit(1);
     }
-    client.set(key, nextPhaseName);
+    client.set(keyPhase, nextPhaseName);
     ios.to(gid).emit('PHASE_UPDATE', {
       phase: nextPhaseName,
     });
