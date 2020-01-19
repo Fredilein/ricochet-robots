@@ -43,7 +43,7 @@ function initPhase(gid, phase, ios) {
       console.log('init phase timer');
       setTimeout(() => {
         nextPhase(gid, ios);
-      }, 3000);
+      }, 5000);
       break;
     case 'proof':
       console.log('init phase proof');
@@ -191,8 +191,8 @@ function nextPhase(gid, ios) {
 function newGuess(gid, name, guess, ios) {
   const key = `game:${gid}:guesses`;
   const keyPhase = `game:${gid}:phase`;
-  client.get(keyPhase, (_0, getRes) => {
-    if (getRes === 'proof') return;
+  client.get(keyPhase, (_0, phase) => {
+    if (phase === 'proof') return;
     client.zadd(key, guess, name, (_1, _2) => {
       client.zrange(key, 0, -1, 'WITHSCORES', (_3, guesses) => {
         ios.to(gid).emit('GUESS_UPDATE', {
@@ -200,6 +200,7 @@ function newGuess(gid, name, guess, ios) {
         });
       });
     });
+    if (phase === 'guess') nextPhase(gid, ios);
   });
 }
 
