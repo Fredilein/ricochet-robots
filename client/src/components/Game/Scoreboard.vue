@@ -1,11 +1,17 @@
 <template>
   <div>
-    <!-- <ul class="list-group"> -->
-    <!--   <li v-for="(player, i) in players" v-bind:key="i" class="list-group-item"> -->
-    <!--     {{ player.name }} -->
-    <!--   </li> -->
-    <!-- </ul> -->
-    {{ players }}
+    <ul class="list-group score-list">
+      <li
+        v-for="(score, name, i) in players"
+        v-bind:key="i"
+        class="list-group-item d-flex justify-content-between align-items-center guess-item"
+      >
+        <span>{{ name }}</span>
+        <span
+          ><strong>{{ score }}</strong></span
+        >
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -21,3 +27,8 @@ export default {
   mounted() {},
 };
 </script>
+
+<style lang="stylus">
+.score-list
+  margin-bottom 20px
+</style>

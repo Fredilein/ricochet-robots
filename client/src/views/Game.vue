@@ -1,24 +1,30 @@
 <template>
   <div class="container game">
-    <h1>{{ this.$route.params.gameName }}</h1>
+    <h3>{{ this.$route.params.gameName }}, {{ name }}</h3>
 
-    <h2>Phase</h2>
-    <p>Phase: {{ phase }}</p>
+    <!-- <h2>Phase</h2> -->
+    <!-- <p>Phase: {{ phase }}</p> -->
 
-    <h2>Goal</h2>
-    <p>{{ goal }}</p>
+    <h4>Goal: {{ goal ? goal.color + goal.index : 'no goal...' }}</h4>
+    <h4>Phase: {{ phase }}</h4>
 
-    <h2>Guess</h2>
-    <guess v-bind:guesses="guesses" v-on:guess="sendGuess($event)" />
+    <guess v-bind:guesses="guesses" v-bind:phase="phase" v-on:guess="sendGuess($event)" />
 
-    <h2>Turn</h2>
-    <p>{{ turn }}</p>
-    <button class="btn btn-primary" v-on:click="passTurn()">
-      Pass
-    </button>
-    <div v-if="turn && turn[1] > 0">Remaining: {{ turn[1] - count }}</div>
+    <div v-if="turn[0] && turn[0] === name">
+      <h4>
+        It's YOUR turn!
+      </h4>
+      <button class="btn btn-primary" v-on:click="passTurn()">
+        Pass
+      </button>
+    </div>
+    <div v-else-if="turn[0]">
+      <h4>It's {{ turn[0] }}'s turn</h4>
+    </div>
+    <div v-if="turn && turn[1] > 0">
+      <h4>{{ turn[1] - count }} moves remaining</h4>
+    </div>
 
-    <h2>Board</h2>
     <board v-bind:board="board" v-bind:robots="robots" v-on:new-move="sendMove($event)" />
 
     <h2>Scoreboard</h2>
@@ -54,6 +60,7 @@ export default {
       turn: {},
       count: 0,
       goal: {},
+      name: '',
       socket: socket('localhost:4001'),
       error: '',
     };
@@ -64,13 +71,12 @@ export default {
       console.log(store.getPlayerName());
       const name = store.getPlayerName();
       const prevGuess = this.guesses[name];
-      if (!prevGuess || prevGuess > num) {
-        this.socket.emit('NEW_GUESS', {
-          gameId: this.$route.params.gameId,
-          playerName: store.getPlayerName(),
-          guess: num,
-        });
-      }
+      if (prevGuess && prevGuess < num) return;
+      this.socket.emit('NEW_GUESS', {
+        gameId: this.$route.params.gameId,
+        playerName: store.getPlayerName(),
+        guess: num,
+      });
     },
     nextPhase() {
       this.socket.emit('nextphasepls', {
@@ -96,6 +102,7 @@ export default {
     },
   },
   mounted() {
+    this.name = store.getPlayerName();
     this.socket.emit('INIT', {
       gameId: this.$route.params.gameId,
       playerName: store.getPlayerName(),

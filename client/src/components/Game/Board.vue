@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="board">
     <table>
       <tr v-for="(row, i) in board.rows" v-bind:key="i">
         <td v-for="(tile, j) in row.tiles" v-bind:key="j">
@@ -11,11 +11,6 @@
         </td>
       </tr>
     </table>
-
-    <h2>Robots board</h2>
-    {{ robots }}
-    <h2>Moves</h2>
-    {{ clicks }}
   </div>
 </template>
 
@@ -75,4 +70,6 @@ td:after {
   display: block;
   margin-top: 100%;
 }
+.board
+  margin-bottom 20px
 </style>

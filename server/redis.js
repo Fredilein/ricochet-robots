@@ -200,7 +200,7 @@ function newGuess(gid, name, guess, ios) {
         });
       });
     });
-    if (phase === 'guess') nextPhase(gid, ios);
+    // if (phase === 'guess') nextPhase(gid, ios);
   });
 }
 
