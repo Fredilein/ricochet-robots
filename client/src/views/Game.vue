@@ -8,6 +8,17 @@
     <h4>Goal: {{ goal ? goal.color + goal.index : 'no goal...' }}</h4>
     <h4>Phase: {{ phase }}</h4>
 
+    <div v-if="phase === 'timer'" class="progress">
+      <div
+        class="progress-bar"
+        role="progressbar"
+        v-bind:style="{ width: percent + '%' }"
+        v-bind:aria-valuenow="percent"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      ></div>
+    </div>
+
     <guess v-bind:guesses="guesses" v-bind:phase="phase" v-on:guess="sendGuess($event)" />
 
     <div v-if="turn[0] && turn[0] === name">
@@ -43,6 +54,8 @@ import scoreboard from '../components/Game/Scoreboard.vue';
 import guess from '../components/Game/Guess.vue';
 import store from '../store';
 
+let timer;
+
 export default {
   name: 'game',
   components: {
@@ -61,6 +74,7 @@ export default {
       count: 0,
       goal: {},
       name: '',
+      percent: 100,
       socket: socket('localhost:4001'),
       error: '',
     };
@@ -100,6 +114,10 @@ export default {
         });
       }
     },
+    decreasePercent() {
+      const p = this.percent - 1;
+      this.percent = Math.max(p, 0);
+    },
   },
   mounted() {
     this.name = store.getPlayerName();
@@ -119,6 +137,12 @@ export default {
     });
     this.socket.on('PHASE_UPDATE', (data) => {
       this.phase = data.phase;
+      if (data.phase === 'timer') {
+        timer = setInterval(this.decreasePercent, 190); // some time lost on latency
+      } else {
+        clearInterval(timer);
+        this.percent = 100;
+      }
     });
     this.socket.on('GUESS_UPDATE', (data) => {
       this.guesses = data.guesses;
@@ -139,4 +163,7 @@ export default {
 <style lang="stylus">
 .game
   margin-bottom 40px
+
+.progress
+  margin-bottom 20px
 </style>

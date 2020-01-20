@@ -43,7 +43,7 @@ function initPhase(gid, phase, ios) {
       console.log('init phase timer');
       setTimeout(() => {
         nextPhase(gid, ios);
-      }, 5000);
+      }, 20000);
       break;
     case 'proof':
       console.log('init phase proof');
@@ -200,7 +200,7 @@ function newGuess(gid, name, guess, ios) {
         });
       });
     });
-    // if (phase === 'guess') nextPhase(gid, ios);
+    if (phase === 'guess') nextPhase(gid, ios);
   });
 }
 
