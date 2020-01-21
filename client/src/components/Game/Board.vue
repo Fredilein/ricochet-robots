@@ -7,6 +7,7 @@
             v-bind:tile="tile"
             v-bind:robot="robots | checkRobot(i, j)"
             v-on:click="click(i, j)"
+            v-bind:inmove="clicks | checkMove(i, j)"
           />
         </td>
       </tr>
@@ -40,6 +41,9 @@ export default {
         if (r[key][0] === i && r[key][1] === j) color = key;
       });
       return color;
+    },
+    checkMove(c, i, j) {
+      return c[0] && c[0][0] === i && c[0][1] === j;
     },
   },
   methods: {

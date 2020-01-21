@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tile"
+    v-bind:class="inmove ? 'movetile' : 'tile'"
     v-bind:style="styledTile"
     v-on:click="$emit('click')"
   >
@@ -22,6 +22,7 @@ export default {
   props: {
     tile: Object,
     robot: String,
+    inmove: Boolean,
   },
   data() {
     return {
@@ -50,6 +51,14 @@ export default {
   left: 0;
   right: 0;
   background-color #e9e9cd
+
+.movetile
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color #e9cdcd
 
 .goal
   font-size 100%
