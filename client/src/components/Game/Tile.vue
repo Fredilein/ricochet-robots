@@ -4,12 +4,14 @@
     v-bind:style="styledTile"
     v-on:click="$emit('click')"
   >
-    <div v-if="tile.goal">
-      <div class="goal" v-bind:style="{ color: tile.goal.color }">{{ tile.goal.index }}</div>
-    </div>
-    <!-- <h3>{{ robot }}</h3> -->
-    <div v-if="robot !== ''">
-      <div v-bind:style="{ backgroundColor: robot }" class="dot"></div>
+    <div class="tile-inner">
+      <div v-if="tile.goal">
+        <div class="goal" v-bind:style="{ color: tile.goal.color }">{{ tile.goal.index }}</div>
+      </div>
+      <!-- <h3>{{ robot }}</h3> -->
+      <div v-if="robot !== ''">
+        <div v-bind:style="{ backgroundColor: robot }" class="dot"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -27,18 +29,18 @@ export default {
   data() {
     return {
       styledTile: {
-        borderTop: '2px solid black',
-        borderRight: '2px solid black',
-        borderBottom: '2px solid black',
-        borderLeft: '2px solid black',
+        borderTop: '1px solid black',
+        borderRight: '1px solid black',
+        borderBottom: '1px solid black',
+        borderLeft: '1px solid black',
       },
     };
   },
   mounted() {
-    if (this.tile.walls.includes(0)) this.styledTile.borderTop = '7px solid black';
-    if (this.tile.walls.includes(1)) this.styledTile.borderRight = '7px solid black';
-    if (this.tile.walls.includes(2)) this.styledTile.borderBottom = '7px solid black';
-    if (this.tile.walls.includes(3)) this.styledTile.borderLeft = '7px solid black';
+    if (this.tile.walls.includes(0)) this.styledTile.borderTop = '5px solid black';
+    if (this.tile.walls.includes(1)) this.styledTile.borderRight = '5px solid black';
+    if (this.tile.walls.includes(2)) this.styledTile.borderBottom = '5px solid black';
+    if (this.tile.walls.includes(3)) this.styledTile.borderLeft = '5px solid black';
   },
 };
 </script>
@@ -61,7 +63,15 @@ export default {
   background-color #e9cdcd
 
 .goal
-  font-size 100%
+  font-size 150%
+  position absolute
+  margin-top 2px
+  margin-left 5px
+
+.tile-inner
+  position relative
+  width 100%
+  height 100%
 
 .dot
   height: 25px;
@@ -70,5 +80,9 @@ export default {
   border-radius: 50%;
   display: inline-block;
   border 2px solid black
-  margin-top 8px
+  position absolute
+  margin 0 auto
+  top 25%
+  left 25%
+
 </style>
