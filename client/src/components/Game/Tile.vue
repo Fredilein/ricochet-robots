@@ -45,5 +45,5 @@ export default {
   background: gold;
 
 .goal
-  font-size 400%
+  font-size 100%
 </style>

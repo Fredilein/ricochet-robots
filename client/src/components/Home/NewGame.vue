@@ -4,19 +4,19 @@
     <div class="form-group">
       <label for="name">Game Name</label>
       <input class="form-control" id="name" type="text" v-model="name" />
-      <br />
-      <label for="playerInput">Player Names</label>
-      <input
-        class="form-control"
-        id="playerInput"
-        type="text"
-        v-for="(player, index) in players"
-        v-model="players[index]"
-        v-bind:key="index"
-      />
-      <button type="button" class="btn btn-primary" v-on:click="addPlayer">
-        Add Player
-      </button>
+      <!-- <br /> -->
+      <!-- <label for="playerInput">Player Names</label> -->
+      <!-- <input -->
+      <!--   class="form-control" -->
+      <!--   id="playerInput" -->
+      <!--   type="text" -->
+      <!--   v-for="(player, index) in players" -->
+      <!--   v-model="players[index]" -->
+      <!--   v-bind:key="index" -->
+      <!-- /> -->
+      <!-- <button type="button" class="btn btn-primary" v-on:click="addPlayer"> -->
+      <!--   Add Player -->
+      <!-- </button> -->
     </div>
 
     <button type="button" class="btn btn-primary" v-on:click="createGame">

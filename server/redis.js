@@ -4,8 +4,11 @@ const lib = require('./lib');
 const client = redis.createClient();
 
 const defaultRobots = {
-  red: [0, 0],
-  blue: [2, 2],
+  red: [1, 1],
+  blue: [1, 14],
+  green: [14, 1],
+  yellow: [14, 14],
+  grey: [7, 5],
 };
 const defaultPlayer = {
   score: 0,
@@ -43,7 +46,7 @@ function initPhase(gid, phase, ios) {
       console.log('init phase timer');
       setTimeout(() => {
         nextPhase(gid, ios);
-      }, 20000);
+      }, 5000);
       break;
     case 'proof':
       console.log('init phase proof');

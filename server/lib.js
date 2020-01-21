@@ -11,7 +11,6 @@ function moveRobots(robots, move) {
   const cStart = move[0][1];
   const rEnd = move[1][0];
   const cEnd = move[1][1];
-  console.log(rEnd);
   const endtile = board.rows[rEnd].tiles[cEnd].walls;
   const starttile = board.rows[rStart].tiles[cStart].walls;
   if (rStart === rEnd && cStart === cEnd) {
