@@ -1,9 +1,16 @@
 <template>
-  <div class="tile" v-bind:style="styledTile" v-on:click="$emit('click')">
+  <div
+    class="tile"
+    v-bind:style="styledTile"
+    v-on:click="$emit('click')"
+  >
     <div v-if="tile.goal">
       <div class="goal" v-bind:style="{ color: tile.goal.color }">{{ tile.goal.index }}</div>
     </div>
-    <h3>{{ robot }}</h3>
+    <!-- <h3>{{ robot }}</h3> -->
+    <div v-if="robot !== ''">
+      <div v-bind:style="{ backgroundColor: robot }" class="dot"></div>
+    </div>
   </div>
 </template>
 
@@ -42,8 +49,17 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
-  background: gold;
+  background-color #e9e9cd
 
 .goal
   font-size 100%
+
+.dot
+  height: 25px;
+  width: 25px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  border 2px solid black
+  margin-top 8px
 </style>
