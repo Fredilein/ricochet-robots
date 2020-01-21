@@ -4,7 +4,7 @@ const hapi = require('hapi');
 const io = require('socket.io');
 const games = require('./db/games');
 
-const board = require('./assets/board.json');
+const board = require('./assets/board-lg.json');
 
 const redis = require('./redis.js');
 const lib = require('./lib');

@@ -62,7 +62,7 @@ table {
   width: 100%;
 }
 td {
-  width: 33.33%;
+  width: 6.25%;
   position: relative;
 }
 td:after {
