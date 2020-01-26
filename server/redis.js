@@ -46,7 +46,7 @@ function initPhase(gid, phase, ios) {
       console.log('init phase timer');
       setTimeout(() => {
         nextPhase(gid, ios);
-      }, 5000);
+      }, 30000);
       break;
     case 'proof':
       console.log('init phase proof');

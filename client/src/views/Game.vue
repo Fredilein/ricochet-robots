@@ -138,7 +138,7 @@ export default {
     this.socket.on('PHASE_UPDATE', (data) => {
       this.phase = data.phase;
       if (data.phase === 'timer') {
-        timer = setInterval(this.decreasePercent, 190); // some time lost on latency
+        timer = setInterval(this.decreasePercent, 295); // some time lost on latency
       } else {
         clearInterval(timer);
         this.percent = 100;
